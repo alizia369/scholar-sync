@@ -1,0 +1,27 @@
+name: Sync Google Scholar Stats
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # runs daily at 6am UTC
+  workflow_dispatch:        # lets you trigger it manually too
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install scholarly requests
+
+      - name: Fetch and push Scholar stats
+        env:
+          GIST_ID: ${{ secrets.GIST_ID }}
+          GITHUB_TOKEN: ${{ secrets.GIST_TOKEN }}
+          SCHOLAR_ID: BVBJ06QAAAAJ
+        run: python fetch_scholar.py
